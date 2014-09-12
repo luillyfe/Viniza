@@ -1,73 +1,67 @@
-<!DOCTYPE HTML>
+<!-- app/views/nerds/index.blade.php -->
+
+<!DOCTYPE html>
 <html>
-
 <head>
-  <title>Juan Valdez</title>
-  <meta name="description" content="Juan Valdez" />
-  <meta name="keywords" content="Juan Valdez, Comprar Cúcuta" />
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="../css/style.css" />
-  <!-- modernizr enables HTML5 elements and feature detects -->
-  <script type="text/javascript" src="../js/modernizr-1.5.min.js"></script>
+  <title>De compras en, Juan Valdez</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 </head>
-
 <body>
-  <div id="main">
-    
-    <div id="top_split">	
-	
-	<header>
-      <div id="logo">
-        <div id="logo_text">
-          <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="#">Juan Valdez<span class="logo_colour">:)</span></a></h1>
-          <h2>Compra on-line</h2>
-        </div>
-      </div>
-      <nav>
-        <ul class="sf-menu" id="nav">
-          <li class="selected"><a href="#">Home</a></li>
-          <li> <a href="#" >Productos</a> 
-              <ul>
-                <li><a href="new" >Nuevo</a> </li>
-              </ul>
-          </li>
-        </ul>
-      </nav>  
-	</header>
+<div class="container">
 
-	<div id="site_content" >
-      <ul id="images" class='gallery'>
-        <?php  
-          foreach ($products as $product) {
-            echo "<li>  <img  src='".$product->image."' 
-                            class='productsAll' >
-                        <a href='".$product->id."' >ver</a>
-                        <a href='".$product->id."/edit' >edit</a>
-                        <a href='".$product->id."/delete' >borrar</a></li>";
-          } ?>  
-      </ul>  
-	</div>  	
-	
-    </div>
-    <footer>
-      <p>Copyright &copy; CSS3_gallery_grey | <a href="http://fotogrph.com/">Images</a> | <a href="http://www.css3templates.co.uk">design from css3templates.co.uk</a></p>
-    </footer>
+<nav class="navbar navbar-inverse">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="{{ URL::to('products') }}">Juan Valdez</a>
   </div>
-  <p>&nbsp;</p>
-  <!-- javascript at the bottom for fast page loading -->
-  <script type="text/javascript" src="../js/jquery.js"></script>
-  <script type="text/javascript" src="../js/jquery.easing-sooper.js"></script>
-  <script type="text/javascript" src="../js/jquery.sooperfish.js"></script>
-  <script type="text/javascript" src="../js/jquery.kwicks-1.5.1.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#images').kwicks({
-        max : 600,
-        spacing : 2
-      });
-      $('ul.sf-menu').sooperfish();
-    });
-  </script>
+  <ul class="nav navbar-nav">
+    <li><a href="{{ URL::to('products') }}">View All products</a></li>
+    <li><a href="{{ URL::to('products/create') }}">Create a product</a>
+  </ul>
+</nav>
+
+<h1>Control de productos</h1>
+
+<!-- will be used to show any messages -->
+@if (Session::has('message'))
+  <div class="alert alert-info">{{ Session::get('message') }}</div>
+@endif
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <td>ID</td>
+      <td>Name</td>
+      <td>Price</td>
+      <td>Image</td>
+      <td>Actions</td>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach($products as $key => $value)
+    <tr>
+      <td>{{ $value->id }}</td>
+      <td>{{ $value->productname }}</td>
+      <td>{{ $value->price }}</td>
+      <td><img src=public/{{ $value->image }} width="100px" height="80px" ></td>
+
+      <!-- we will also add show, edit, and delete buttons -->
+      <td>
+
+        <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->
+        <!-- we will add this later since its a little more complicated than the other two buttons -->
+
+        <!-- show the nerd (uses the show method found at GET /nerds/{id} -->
+        <a class="btn btn-small btn-success" href="{{ URL::to('products/' . $value->id) }}">Ver</a>
+
+        <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
+        <a class="btn btn-small btn-info" href="{{ URL::to('products/' . $value->id . '/edit') }}">Actualizar</a>
+
+      </td>
+    </tr>
+  @endforeach
+  </tbody>
+</table>
+
+</div>
 </body>
 </html>

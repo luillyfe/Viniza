@@ -18,10 +18,13 @@ class CreateProductsTable extends Migration {
 			$table->string('productname');
 			$table->integer('price');
 			$table->binary('image');
+
 			$table->unsignedInteger('admon_id');
 			$table->unsignedInteger('category_id');
-			$table->foreign('admon_id')->references('id')->on('admons');
-			$table->foreign('category_id')->references('id')->on('categories');
+			$table->foreign('admon_id')->references('id')->on('admons')
+					->onDelete('cascade')->onUpdate('cascade');
+			$table->foreign('category_id')->references('id')->on('categories')
+					->onDelete('cascade')->onUpdate('cascade');
 			$table->timestamps();
 		});
 	}

@@ -18,8 +18,10 @@ class CreatePurchasesTable extends Migration {
 			$table->dateTime('datepurchase');
 			$table->unsignedInteger('product_id');
 			$table->unsignedInteger('customer_id');
-			$table->foreign('product_id')->references('id')->on('products');
-			$table->foreign('customer_id')->references('id')->on('customers');
+			$table->foreign('product_id')->references('id')->on('products')
+						->onDelete('cascade')->onUpdate('cascade');
+			$table->foreign('customer_id')->references('id')->on('customers')
+						->onDelete('cascade')->onUpdate('cascade');
 			$table->timestamps();
 		});
 	}

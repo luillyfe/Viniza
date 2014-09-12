@@ -1,83 +1,114 @@
 <?php
 
-class ProductController extends BaseController {
+class ProductController extends \BaseController {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Product Controller
-	|--------------------------------------------------------------------------
-	|
-	| This Controller handle all request about products. 
-	|
-	|	Route::get('products/new', 'ProductController@newProduct');
-	|
-	*/
+	/**
+	 * the layout that should for responses
+	 *
+	 */
+	//protected $layout = "layouts.master" ;
 
-	public function newProduct() {
-		return View::make('products.new');
-	}
-
-	public function create() {
-		$product 	= 	new Product;
-		$data 		= 	Input::all();
-		$product 	->	fill($data);
-		$product 	->	admon_id = 1;
-		$product 	->	category_id = 1;
-		
-		$image		=	Input::file('image');
-		$product 	->  image = '../images/products/'.
-									$image->getClientOriginalName();
-		$image		->  move('images/products', $image->getClientOriginalName());
-		$product 	->	save();
-
-		#return "<img src='".$product->image."'>";
-		return Redirect::to('products/index');
-	}
-
-	public function index() {
+	/**
+	 * Display all product in the shop
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		//get all the products
 		$products = Product::all();
 
-		return View::make('products.index')
-					->with('products', $products); 		
+		//load the view and pass the products
+		return View::make('products.index')->with('products', $products);
 	}
 
-	public function show($id) {
-		$product = Product::find($id);
-		
-		return View::make('products.show')
-					->with('product', $product);
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		//load the create form
+		return View::make('products.create');
 	}
 
-	public function edit($id) {
-		$product = Product::find($id);
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		//
+		$rules = array(
+			'name'       => 'required',
+			'price'      => 'required|numeric',
+			'image' 	 => 'required'
+		);
+		$validator = Validator::make(Input::all(), $rules);
 
-		return View::make('products.edit')
-					->with('product', $product);
+		// process the store
+		if ($validator->fails()) {
+			return Redirect::to('products/create')
+				->withErrors($validator);
+		} else {
+			// store
+			$product = new Product;
+			$product->productname 	= Input::get('name');
+			$product->price      	= Input::get('price');
+			// Size max for image = 524314 bits
+			$product->image 	  	= Input::get('image');
+			$product->save();
+
+			// redirect
+			Session::flash('message', 'Successfully created products!');
+			return Redirect::to('products');
+		}
 	}
 
-	public function update($id) {
-		$product = Product::find($id);
-		$product->productname = Input::get('productname');
-		$product->price = Input::get('price');
-		
-		/** If form field image is not null then assig the
-		 *  form field image to product attribute image
-		 *  othersiwe product attribute image not change  
-		**/
-		if(Input::get('image') != null)
-			$product->image = Input::get('image');
-		
-		$product->save(); 
-
-		return View::make('products.show')
-					->with('product', $product);
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id)
+	{
+		//
 	}
 
-	public function delete($id) {
-		$product = Product::find($id);
-		$product->delete();
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		//
+	}
 
-		return Redirect::to('products/index');
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function update($id)
+	{
+		//
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		//
 	}
 
 }
